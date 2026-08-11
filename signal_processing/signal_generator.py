@@ -114,6 +114,57 @@ def generate_signal_with_noise(snr_db):
     )
 
     return time, noisy_signal
+# -----------------------------
+# Generate complete dataset
+# -----------------------------
+
+def generate_dataset(samples_per_class_per_snr=10):
+
+    dataset = []
+
+    sample_id = 0
+
+    for snr_db in SNR_LEVELS:
+
+        # -------------------------
+        # Class 0: Noise only
+        # -------------------------
+
+        for _ in range(samples_per_class_per_snr):
+
+            noise = generate_noise_only(
+                signal_length=int(SAMPLE_RATE * DURATION)
+            )
+
+            dataset.append({
+                "sample_id": sample_id,
+                "snr_db": snr_db,
+                "signal": noise,
+                "label": 0
+            })
+
+            sample_id += 1
+
+        # -------------------------
+        # Class 1: Signal + noise
+        # -------------------------
+
+        for _ in range(samples_per_class_per_snr):
+
+            time, noisy_signal = generate_signal_with_noise(
+                snr_db
+            )
+
+            dataset.append({
+                "sample_id": sample_id,
+                "snr_db": snr_db,
+                "signal": noisy_signal,
+                "label": 1
+            })
+
+            sample_id += 1
+
+    return dataset
 
 
 # -----------------------------

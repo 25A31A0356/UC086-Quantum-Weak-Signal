@@ -53,7 +53,7 @@ def add_noise(signal, snr_db):
 
     noisy_signal = signal + noise
 
-    return noisy_signal.  
+    return noisy_signal  
 # -----------------------------
 # Generate noise-only sample
 # -----------------------------

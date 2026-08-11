@@ -11,6 +11,7 @@ DURATION = 1.0
 SIGNAL_FREQUENCY = 50
 
 RANDOM_SEED = 42
+SNR_LEVELS = [10, 5, 0, -5, -10]
 
 
 # -----------------------------
@@ -52,7 +53,36 @@ def add_noise(signal, snr_db):
 
     noisy_signal = signal + noise
 
-    return noisy_signal
+    return noisy_signal.  
+# -----------------------------
+# Generate noise-only sample
+# -----------------------------
+
+def generate_noise_only(signal_length, noise_power=1.0):
+
+    noise = np.random.normal(
+        0,
+        np.sqrt(noise_power),
+        size=signal_length
+    )
+
+    return noise
+
+
+# -----------------------------
+# Generate signal + noise sample
+# -----------------------------
+
+def generate_signal_with_noise(snr_db):
+
+    time, clean_signal = generate_clean_signal()
+
+    noisy_signal = add_noise(
+        clean_signal,
+        snr_db
+    )
+
+    return time, noisy_signal
 
 
 # -----------------------------

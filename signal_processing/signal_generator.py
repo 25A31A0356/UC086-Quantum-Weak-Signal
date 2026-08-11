@@ -56,6 +56,37 @@ def add_noise(signal, snr_db):
     return noisy_signal  
 # -----------------------------
 # Generate noise-only sample
+# Class 0
+# -----------------------------
+
+def generate_noise_only(signal_length, noise_power=1.0):
+
+    noise = np.random.normal(
+        0,
+        np.sqrt(noise_power),
+        size=signal_length
+    )
+
+    return noise
+
+
+# -----------------------------
+# Generate signal + noise sample
+# Class 1
+# -----------------------------
+
+def generate_signal_with_noise(snr_db):
+
+    time, clean_signal = generate_clean_signal()
+
+    noisy_signal = add_noise(
+        clean_signal,
+        snr_db
+    )
+
+    return time, noisy_signal
+# -----------------------------
+# Generate noise-only sample
 # -----------------------------
 
 def generate_noise_only(signal_length, noise_power=1.0):

@@ -2,9 +2,11 @@ import numpy as np
 import pandas as pd
 import joblib
 
+from sklearn.preprocessing import StandardScaler
+
 
 # ============================================================
-# LOAD M3 DATA
+# 1. LOAD M3 ENGINEERED DATA
 # ============================================================
 
 df = pd.read_csv(
@@ -19,13 +21,18 @@ test_indices = np.load(
     "../features/test_indices.npy"
 )
 
-scaler = joblib.load(
-    "../features/feature_scaler.pkl"
-)
+
+print("=" * 60)
+print("M5 QUANTUM DATA PREPARATION")
+print("=" * 60)
+
+print("Engineered features loaded")
+print("Train indices loaded")
+print("Test indices loaded")
 
 
 # ============================================================
-# SELECT 4 FEATURES FOR QUANTUM CIRCUIT
+# 2. SELECT FEATURES FOR QUANTUM CIRCUIT
 # ============================================================
 
 QUANTUM_FEATURES = [
@@ -35,35 +42,34 @@ QUANTUM_FEATURES = [
     "energy"
 ]
 
-
 X = df[QUANTUM_FEATURES]
-
 y = df["label"]
 
 
+print("\nSelected quantum features:")
+
+for feature in QUANTUM_FEATURES:
+    print("-", feature)
+
+
 # ============================================================
-# TRAIN / TEST SPLIT
+# 3. TRAIN / TEST SPLIT
 # ============================================================
 
 X_train = X.iloc[train_indices]
-
 X_test = X.iloc[test_indices]
 
 y_train = y.iloc[train_indices]
-
 y_test = y.iloc[test_indices]
 
 
-# ============================================================
-# IMPORTANT:
-# The M3 scaler was trained on all 9 features.
-#
-# Therefore we cannot directly use it on only 4 columns.
-# We create a scaler specifically for the selected
-# quantum features using TRAINING DATA ONLY.
-# ============================================================
+print("\nTraining samples:", len(X_train))
+print("Testing samples:", len(X_test))
 
-from sklearn.preprocessing import StandardScaler
+
+# ============================================================
+# 4. QUANTUM-SPECIFIC SCALING
+# ============================================================
 
 quantum_scaler = StandardScaler()
 
@@ -77,34 +83,33 @@ X_test_scaled = quantum_scaler.transform(
 
 
 # ============================================================
-# CONVERT FEATURES TO QUANTUM-FRIENDLY RANGE
+# 5. CONVERT FEATURES TO QUANTUM ANGLES
 # ============================================================
 
-X_train_quantum = np.pi * np.tanh(
-    X_train_scaled
+X_train_quantum = (
+    np.pi * np.tanh(X_train_scaled)
 )
 
-X_test_quantum = np.pi * np.tanh(
-    X_test_scaled
+X_test_quantum = (
+    np.pi * np.tanh(X_test_scaled)
 )
 
 
 # ============================================================
-# DISPLAY INFORMATION
+# 6. VERIFY DATA
 # ============================================================
 
+print("\n" + "=" * 60)
+print("QUANTUM DATA")
 print("=" * 60)
-print("QUANTUM DATA PREPARATION")
-print("=" * 60)
-
-print("Selected features:")
-for feature in QUANTUM_FEATURES:
-    print("-", feature)
-
-print("\nNumber of qubits:", len(QUANTUM_FEATURES))
 
 print(
-    "\nTraining shape:",
+    "Number of quantum features:",
+    len(QUANTUM_FEATURES)
+)
+
+print(
+    "Training shape:",
     X_train_quantum.shape
 )
 
@@ -114,7 +119,7 @@ print(
 )
 
 print(
-    "\nQuantum value range:",
+    "Quantum value range:",
     X_train_quantum.min(),
     "to",
     X_train_quantum.max()
@@ -122,7 +127,7 @@ print(
 
 
 # ============================================================
-# SAVE PREPARED DATA
+# 7. SAVE QUANTUM DATA
 # ============================================================
 
 np.save(
@@ -151,7 +156,16 @@ joblib.dump(
 )
 
 
-print("\nSaved files:")
+# ============================================================
+# 8. COMPLETE
+# ============================================================
+
+print("\n" + "=" * 60)
+print("M5 QUANTUM DATA PREPARATION COMPLETE")
+print("=" * 60)
+
+print("\nGenerated:")
+
 print("X_train_quantum.npy")
 print("X_test_quantum.npy")
 print("y_train_quantum.npy")

@@ -1,0 +1,11 @@
+[
+    "mean",
+    "std",
+    "max",
+    "min",
+    "rms",
+    "peak_to_peak",
+    "energy",
+    "dominant_frequency",
+    "dominant_magnitude"
+]

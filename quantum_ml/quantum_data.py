@@ -10,15 +10,15 @@ from sklearn.preprocessing import StandardScaler
 # ============================================================
 
 df = pd.read_csv(
-    "../features/engineered_features.csv"
+    "engineered_features.csv"
 )
 
 train_indices = np.load(
-    "../features/train_indices.npy"
+    "train_indices.npy"
 )
 
 test_indices = np.load(
-    "../features/test_indices.npy"
+    "test_indices.npy"
 )
 
 

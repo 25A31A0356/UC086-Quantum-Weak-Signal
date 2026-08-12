@@ -116,6 +116,8 @@ results = []
 
 for name, model in models.items():
 
+    print(f"\nTraining {name}...")
+
     model.fit(
         X_train_scaled,
         y_train
@@ -171,7 +173,9 @@ for name, model in models.items():
 
 results_df = pd.DataFrame(results)
 
-print("\nCLASSICAL ML RESULTS")
+print("\n")
+print("=" * 60)
+print("CLASSICAL ML RESULTS")
 print("=" * 60)
 
 print(
@@ -192,7 +196,7 @@ results_df.to_csv(
 
 
 # ============================================================
-# SAVE BEST MODEL
+# SELECT BEST MODEL
 # ============================================================
 
 best_model_name = results_df.loc[
@@ -204,20 +208,30 @@ best_model = models[
     best_model_name
 ]
 
+
+# ============================================================
+# SAVE BEST MODEL
+# ============================================================
+
 joblib.dump(
     best_model,
     "best_classical_model.pkl"
 )
 
+
+print("\n" + "=" * 60)
+print("M4 COMPLETE")
+print("=" * 60)
+
 print(
-    "\nBest model:",
+    "Best model:",
     best_model_name
 )
 
 print(
-    "Saved results.csv"
+    "Saved: results.csv"
 )
 
 print(
-    "Saved best_classical_model.pkl"
+    "Saved: best_classical_model.pkl"
 )

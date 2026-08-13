@@ -1,0 +1,10 @@
+Feature,Mean_CV_Accuracy,Std_CV_Accuracy
+dominant_magnitude,1.0,0.0
+dominant_frequency,0.999,0.002
+energy,0.575,0.217945
+rms,0.554,0.240133
+std,0.552,0.24252
+mean,0.493,0.014
+min,0.402,0.152892
+max,0.365,0.176494
+peak_to_peak,0.36,0.186628

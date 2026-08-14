@@ -51,6 +51,25 @@ class QuantumSupportVectorClassifier:
         self.d_lin_train = None
         self.is_fitted = False
 
+    def transform_angles(self, X: np.ndarray) -> np.ndarray:
+        """Map raw feature vectors into quantum phase angles in [0, pi]."""
+        if not self.is_fitted:
+            raise ValueError("QSVM is not fitted.")
+        X_scaled = self.scaler.transform(X)
+        X_pca = self.pca.transform(X_scaled)
+        angles = self.angle_scaler.transform(X_pca)
+        return angles
+
+    @property
+    def preprocessor(self):
+        """Provide compatible preprocessor wrapper with .transform() method."""
+        class Wrapper:
+            def __init__(self, parent):
+                self.parent = parent
+            def transform(self, X):
+                return self.parent.transform_angles(X)
+        return Wrapper(self)
+
     def _compute_quantum_statevector(self, x: np.ndarray) -> np.ndarray:
         """
         Compute 2^N dimensional quantum statevector for angle vector x under ZZ-FeatureMap.

@@ -271,7 +271,10 @@ with tab_quantum:
     disentangle from random environmental clutter.
     """)
     
-    angles = quantum_model.preprocessor.transform(X_test)
+    if hasattr(quantum_model, "transform_angles"):
+        angles = quantum_model.transform_angles(X_test)
+    else:
+        angles = quantum_model.preprocessor.transform(X_test)
     
     fig_q, ax_q = plt.subplots(figsize=(8, 5), dpi=150)
     sc = ax_q.scatter(angles[:, 0], angles[:, 1], c=y_test, cmap='coolwarm', s=60, edgecolors='black', alpha=0.85)

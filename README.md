@@ -4,6 +4,7 @@
 [![Qiskit](https://img.shields.io/badge/Qiskit-2.3+-613394.svg)](https://qiskit.org/)
 [![Scikit-Learn](https://img.shields.io/badge/scikit--learn-1.0+-F7931E.svg)](https://scikit-learn.org/)
 [![Domain](https://img.shields.io/badge/Domain-Defence%20%7C%20Coastal%20Surveillance%20%7C%20Maritime%20Security-navy.svg)]()
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/25A31A0356/UC086-Quantum-Weak-Signal)
 
 A state-of-the-art framework for **Quantum-Enhanced Weak Signal Detection in Extreme Noise and Clutter Environments**, designed specifically for **Defence, Coastal Surveillance, and Maritime Security**.
 

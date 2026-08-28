@@ -6,6 +6,7 @@ for classifying weak radar and sonar returns in high-clutter environments.
 
 import numpy as np
 import pennylane as qml
+from pennylane import numpy as pnp
 from typing import List, Optional, Tuple, Dict, Any
 from .feature_maps import angle_feature_map, zz_feature_map
 
@@ -35,8 +36,8 @@ class VariationalQuantumClassifier:
 
         # Weight initialization shape for StronglyEntanglingLayers: (n_layers, n_qubits, 3)
         np.random.seed(seed)
-        self.weights = np.random.uniform(0, 2 * np.pi, (n_layers, n_qubits, 3), requires_grad=True)
-        self.bias = np.array(0.0, requires_grad=True)
+        self.weights = pnp.random.uniform(0, 2 * np.pi, (n_layers, n_qubits, 3), requires_grad=True)
+        self.bias = pnp.array(0.0, requires_grad=True)
 
         # Construct quantum node
         self._qnode = qml.QNode(self._quantum_circuit, self.dev, interface="autograd")

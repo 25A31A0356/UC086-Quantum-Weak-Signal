@@ -51,7 +51,7 @@ class VariationalQuantumClassifier:
             self.torch_weights = torch.nn.Parameter(
                 torch.randn(n_layers, n_qubits, 3, dtype=torch.float64) * 0.15
             )
-            self.torch_bias = torch.nn.Parameter(torch.tensor([0.0], dtype=torch.float64))
+            self.fc_head = nn.Linear(n_qubits, 1, dtype=torch.float64)
 
             @qml.qnode(self.dev, interface="torch", diff_method="backprop")
             def _torch_circuit(x, weights):
@@ -65,7 +65,7 @@ class VariationalQuantumClassifier:
                     angle_feature_map(x, wires=self.wires, rotation="Y")
 
                 qml.StronglyEntanglingLayers(weights, wires=self.wires)
-                return qml.expval(qml.PauliZ(0))
+                return [qml.expval(qml.PauliZ(i)) for i in range(self.n_qubits)]
 
             self._torch_qnode = _torch_circuit
         else:
@@ -94,8 +94,9 @@ class VariationalQuantumClassifier:
         if self.use_torch:
             with torch.no_grad():
                 x_t = torch.as_tensor(x, dtype=torch.float64)
-                raw = self._torch_qnode(x_t, self.torch_weights) + self.torch_bias
-                return float(raw.item())
+                outs = torch.stack(self._torch_qnode(x_t, self.torch_weights))
+                logits = self.fc_head(outs.unsqueeze(0)).squeeze()
+                return float(logits.item())
         else:
             w = self.weights if weights is None else weights
             b = self.bias if bias is None else bias
@@ -108,8 +109,9 @@ class VariationalQuantumClassifier:
         if self.use_torch:
             with torch.no_grad():
                 x_t = torch.as_tensor(X, dtype=torch.float64)
-                raws = self._torch_qnode(x_t, self.torch_weights) + self.torch_bias
-                probs_1 = torch.sigmoid(2.5 * raws).cpu().numpy()
+                q_outs = torch.stack([torch.stack(self._torch_qnode(xi, self.torch_weights)) for xi in x_t])
+                logits = self.fc_head(q_outs).squeeze(-1)
+                probs_1 = torch.sigmoid(logits).cpu().numpy()
         else:
             raw_outputs = np.array([self.forward(x, self.weights, self.bias) for x in X])
             probs_1 = 1.0 / (1.0 + np.exp(-2.5 * raw_outputs))
@@ -138,7 +140,7 @@ class VariationalQuantumClassifier:
         y_train: np.ndarray,
         epochs: int = 25,
         batch_size: int = 32,
-        lr: float = 0.05,
+        lr: float = 0.04,
         verbose: bool = False
     ) -> Dict[str, Any]:
         """
@@ -148,7 +150,7 @@ class VariationalQuantumClassifier:
         n_samples = len(X_train)
 
         if self.use_torch:
-            optimizer = optim.Adam([self.torch_weights, self.torch_bias], lr=lr)
+            optimizer = optim.Adam(list(self.fc_head.parameters()) + [self.torch_weights], lr=lr)
             criterion = nn.BCEWithLogitsLoss()
             X_tensor = torch.as_tensor(X_train, dtype=torch.float64)
             y_tensor = torch.as_tensor(y_train, dtype=torch.float64)
@@ -164,8 +166,9 @@ class VariationalQuantumClassifier:
                     y_b = y_tensor[batch_idx]
 
                     optimizer.zero_grad()
-                    outputs = self._torch_qnode(X_b, self.torch_weights) + self.torch_bias
-                    loss = criterion(2.5 * outputs, y_b)
+                    q_outs = torch.stack([torch.stack(self._torch_qnode(xi, self.torch_weights)) for xi in X_b])
+                    logits = self.fc_head(q_outs).squeeze(-1)
+                    loss = criterion(logits, y_b)
                     loss.backward()
                     optimizer.step()
 

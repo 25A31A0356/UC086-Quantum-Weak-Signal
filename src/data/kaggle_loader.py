@@ -54,20 +54,20 @@ class KaggleDatasetManager:
                 if username and key:
                     os.environ["KAGGLE_USERNAME"] = username
                     os.environ["KAGGLE_KEY"] = key
-                    print("[✓] Authenticated to Kaggle using Google Colab Secrets.")
+                    print("[OK] Authenticated to Kaggle using Google Colab Secrets.")
                     return
             except Exception:
                 pass
 
         # Check existing environment variables
         if os.environ.get("KAGGLE_USERNAME") and os.environ.get("KAGGLE_KEY"):
-            print("[✓] Authenticated to Kaggle via environment variables.")
+            print("[OK] Authenticated to Kaggle via environment variables.")
             return
 
         # Check ~/.kaggle/kaggle.json
         kaggle_file = Path.home() / ".kaggle" / "kaggle.json"
         if kaggle_file.exists():
-            print(f"[✓] Authenticated to Kaggle using credentials at {kaggle_file}")
+            print(f"[OK] Authenticated to Kaggle using credentials at {kaggle_file}")
             return
 
     def fetch_sonar_dataset(self) -> str:
@@ -85,7 +85,7 @@ class KaggleDatasetManager:
         try:
             import kagglehub
             dataset_path = kagglehub.dataset_download(handle)
-            print(f"[✓] Connected to Kaggle! Dataset cached at: {dataset_path}")
+            print(f"[OK] Connected to Kaggle! Dataset cached at: {dataset_path}")
             
             # Find CSV file
             csv_files = glob.glob(os.path.join(dataset_path, "*.csv"))
@@ -105,7 +105,7 @@ class KaggleDatasetManager:
             api.dataset_download_files(handle, path=target_dir, unzip=True)
             csv_files = glob.glob(os.path.join(target_dir, "*.csv"))
             if csv_files:
-                print(f"[✓] Retrieved dataset from Kaggle via API into: {csv_files[0]}")
+                print(f"[OK] Retrieved dataset from Kaggle via API into: {csv_files[0]}")
                 return csv_files[0]
         except Exception as e:
             print(f"[i] Kaggle API connection note: {e}. Connecting to high-speed public dataset mirror...")
@@ -120,7 +120,7 @@ class KaggleDatasetManager:
             url = "https://archive.ics.uci.edu/ml/machine-learning-databases/undocumented/connectionist-bench/sonar/sonar.all-data"
             print(f"[+] Direct streaming from repository mirror: {url}")
             urllib.request.urlretrieve(url, fallback_csv)
-            print(f"[✓] Loaded dataset to: {fallback_csv}")
+            print(f"[OK] Loaded dataset to: {fallback_csv}")
 
         return fallback_csv
 

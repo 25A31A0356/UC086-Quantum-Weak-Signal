@@ -43,7 +43,7 @@ def load_sonar_dataset(data_path: Optional[str] = None) -> Tuple[np.ndarray, np.
 
 
 def prepare_sonar_quantum_data(
-    n_qubits: int = 6,
+    n_qubits: int = 10,
     test_size: float = 0.25,
     random_state: int = 42,
     scaling: str = "angle",
@@ -55,7 +55,7 @@ def prepare_sonar_quantum_data(
     and scales features for quantum embedding circuits.
 
     Args:
-        n_qubits (int): Number of quantum features / qubits (default 6).
+        n_qubits (int): Number of quantum features / qubits (default 10).
         test_size (float): Proportion of dataset for test split (default 0.25).
         random_state (int): Seed for reproducibility.
         scaling (str): 

@@ -34,21 +34,21 @@ def main():
     if args.dataset in ["sonar", "all"]:
         print("\n[+] Processing Sonar Mines vs Rocks dataset...")
         try:
-            sonar_file = manager.download_sonar_dataset()
-            print(f"[✓] Ready at: {sonar_file}")
+            sonar_file = manager.fetch_sonar_dataset()
+            print(f"[OK] Ready at: {sonar_file}")
         except Exception as e:
             print(f"[!] Error downloading Sonar dataset: {e}")
 
     if args.dataset in ["statoil", "all"]:
         print("\n[+] Processing Statoil SAR Maritime Radar dataset...")
         try:
-            radar_dir = manager.download_sar_radar_dataset()
+            radar_dir = manager.fetch_sar_radar_dataset()
             if radar_dir:
-                print(f"[✓] Ready at: {radar_dir}")
+                print(f"[OK] Ready at: {radar_dir}")
         except Exception as e:
             print(f"[!] Error downloading Statoil dataset: {e}")
 
-    print("\n[✓] Dataset initialization routine complete.")
+    print("\n[OK] Dataset initialization routine complete.")
 
 
 if __name__ == "__main__":
